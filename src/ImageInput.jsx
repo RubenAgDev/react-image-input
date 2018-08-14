@@ -1,11 +1,56 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helpers from '../utils/Helpers';
 
-import '../assets/css/ImageInput.css';
+import './ImageInput.css';
 
 const DEFAULT_SIZE = 150;
 const EMPTY_OBJECT = {};
+
+/**
+ * Resizes an image to the specified size
+ * @param {string} imgSrc The content of the image
+ * @param {number} maxWidth Maxium width of the resize image
+ * @param {number} maxHeight Maximun height of the resize image
+ */
+const resizeImage = (imgSrc, maxWidth, maxHeight) => {
+    return new Promise((resolve, reject) => {
+        const image = document.createElement('img');
+
+        image.onload = () => {
+            const canvas = document.createElement('canvas');
+            
+            if (image.width <= maxWidth && image.height <= maxHeight) {
+                resolve(imgSrc);
+            }
+
+            if (image.width > image.height) {
+                if (image.width > maxWidth) {
+                    image.height *= maxWidth / image.width;
+                    image.width = maxWidth;
+                }
+            } else if (image.height > maxHeight) {
+                image.width *= maxHeight / image.height;
+                image.height = maxHeight;
+            }
+    
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0, image.width, image.height);
+            
+            const data = canvas.toDataURL();
+
+            if (data) {
+                resolve(data);
+            } else {
+                reject(new Error());
+            }
+        };
+        
+        image.src = imgSrc;
+    });
+};
 
 class ImageInput extends React.Component {
     constructor(props) {
@@ -49,7 +94,7 @@ class ImageInput extends React.Component {
             const image = e.target.result;
 
             if (this.props.maxSize) {
-                Helpers.resizeImage(image, this.props.maxSize.width, this.props.maxSize.height).then((newImage) => {
+                resizeImage(image, this.props.maxSize.width, this.props.maxSize.height).then((newImage) => {
                     this.updateImage(newImage);
                 });
             } else {
