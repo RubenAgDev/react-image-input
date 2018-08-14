@@ -1,0 +1,34 @@
+.amber-image-input {
+    position: relative;
+}
+
+.amber-image-input img, .amber-image-input .default-content {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    color: #999;
+    text-align: center;
+    padding: 0.25rem;
+}
+
+.amber-image-input input[type='file'] {
+    display: none !important;
+}
+
+.amber-image-input label {
+    cursor: pointer;
+    outline: none;
+}
+
+.amber-image-input .clear {
+    cursor: pointer;
+    height: 25px;
+    opacity: 0.4;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    text-align: center;
+    width: 25px;
+}
+
+.amber-image-input .clear:hover {
+    opacity: 1;
+}
